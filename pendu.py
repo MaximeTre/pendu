@@ -2,59 +2,118 @@ import json
 import requests
 import os
 
-def GenerateWord(num):
-    api_url = 'https://trouve-mot.fr/api/random/1'
+def GenerateWord(num): #on prend en parametre le nombre de mot qu'on souhaite générer
+    api_url = f'https://trouve-mot.fr/api/random/{num}'
+    print(api_url)
     try:
-        with open('data.json', 'r') as file:
-            data = json.load(file)
+        try:
+            with open('data.json', 'r') as file:
+                data = json.load(file) 
+        except FileNotFoundError: # on gére les erreurs potentiels
+            data = {"words": []} 
         
-        for _ in range(num):
-            response = requests.get(api_url)
-            if response.status_code == requests.codes.ok:
-                random_word = response.json() 
-                data["words"].append(random_word[0]['name']) 
-                print(f"Mot ajouté: {random_word[0]['name']}")
-            else:
-                print(f"Error: {response.status_code}, {response.text}")
+        
+        data["words"] = [] # on clear le json
+
+        
+        response = requests.get(api_url)
+        if response.status_code == requests.codes.ok:
+            random_words = response.json()  
+            for word in random_words:
+                data["words"].append(word['name'])  
+                print(f"Mot ajouté: {word['name']}")
+        else:
+            print(f"Error: {response.status_code}, {response.text}")
+            return  
         
         with open('data.json', 'w') as file:
             json.dump(data, file, indent=4)
         
-        print("Updated JSON data:", data)
-    except Exception as e:
-        print(f"une erreur est apparu: {e}")
+        print("Mise a jour du JSON : ", data)
+    except Exception as e: # on gére les erreurs potentiels
+        print(f"Une erreur est survenue: {e}")
 
-def viewJson(num):
+def viewJson(): # on va prendre en params
     file = open('data.json')
     data = json.load(file) 
     print(data["words"])
     file.close()
-    return data[num]
+    return data["words"]
 
 
-
-#GenerateWord(5)
-#viewJson(2)
+#GenerateWord(1)
 def compare(a, b):
-    """
-    Fonction qui vérifie si 'a' est présent dans 'b'.
-    Retourne 1 si présent, sinon 0.
-    """
     return 1 if a in b else 0
 
-# Initialisation des variables
+def Change_Params(p,v): # prend en parametre le nom du params : p, et v, la valeur
+    try:
+        try:
+            with open('data.json', 'r') as file:
+                data = json.load(file) 
+        except FileNotFoundError: # on gére les erreurs potentiels
+            print("fichier Json non trouvé")
+            return
+        
+        
+        data["params"] = [] # on clear le json
+           
+
+        
+        with open('data.json', 'w') as file:
+            json.dump(data, file, indent=4)
+        
+        print("Mise a jour du JSON : ", data)
+    except Exception as e:
+        print(f"Une erreur est survenue: {e}")
+# Initialisation des variables et de la partie
+
+
+print("""
+                 _                       _         ____                _       
+                | | ___ _   ___  __   __| |_   _  |  _ \ ___ _ __   __| |_   _ 
+             _  | |/ _ \ | | \ \/ /  / _` | | | | | |_) / _ \ '_ \ / _` | | | |
+            | |_| |  __/ |_| |>  <  | (_| | |_| | |  __/  __/ | | | (_| | |_| |
+             \___/ \___|\__,_/_/\_\  \__,_|\__,_| |_|   \___|_| |_|\__,_|\__,_|
+                                                                    By Maxime & Hugo
+      """)
+print("vous souhaitez :")
+print("1) Définir le mot manuellement")
+print("2) Génerer le mot automatiquement")
+print("3) Acceder au Paramètres du jeux")
+print("4) Fermer le jeux")
+reponse_input = int(input())
+
+if reponse_input == 1: 
+    mad = input("Veuillez choisir le mot : ")
+elif reponse_input == 2:
+    GenerateWord(1)
+    mad = viewJson()[0]
+    print(mad)
+elif reponse_input == 3:
+    print("Paramètre ")
+    print("1) Définir le nombre de vie") 
+    response_params = input()
+    if response_params == 1 : # Ce bout de code est pas propre et me fait mal a la tête, mais je suis limité par le temp
+        input()
+elif reponse_input == 4:
+    print("fermeture du programme..")
+else: 
+    print("mauvaise reponse")
+
+
 play = 1
 lppb = []  # Lettre incorrecte
 lpb = []   # Lettre correcte
 k = 10     # Nombre d'essais
-mad = "alright"  # Mot a découvrir
 mot = ["_" for _ in mad]  # mot découvert
 os.system('cls' if os.name == 'nt' else 'clear') #fonction universelle qui permet de clear l'ecran
 
 
-# Configuration de la partie 
+
+
 
 # Lancement du jeux 
+#while numberofword == data['words']
 while play == 1:
     # Affichage de l'état du mot
     print("Mot à deviner : " + " ".join(mot))
@@ -86,6 +145,7 @@ while play == 1:
     if "_" not in mot:  
         print(f"Bien joué, tu as trouver le mot : {mad} !")
         play = 0
+        
     elif k == 0:  
         print(f"T'es nul germain ! Le mot était : {mad}.")
         play = 0
