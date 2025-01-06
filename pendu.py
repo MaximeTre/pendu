@@ -68,14 +68,16 @@ def Change_Params(p,v): # prend en parametre le nom du params : p, et v, la vale
 # Initialisation des variables et de la partie
 
 
-print("""
+print(r"""
+
                  _                       _         ____                _       
                 | | ___ _   ___  __   __| |_   _  |  _ \ ___ _ __   __| |_   _ 
              _  | |/ _ \ | | \ \/ /  / _` | | | | | |_) / _ \ '_ \ / _` | | | |
             | |_| |  __/ |_| |>  <  | (_| | |_| | |  __/  __/ | | | (_| | |_| |
              \___/ \___|\__,_/_/\_\  \__,_|\__,_| |_|   \___|_| |_|\__,_|\__,_|
                                                                     By Maxime & Hugo
-      """)
+""")
+
 print("vous souhaitez :")
 print("1) Définir le mot manuellement")
 print("2) Génerer le mot automatiquement")
